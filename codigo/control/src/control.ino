@@ -4,7 +4,7 @@
 
 Servo servGrip,servLeft,servRight,servRot;
 
-void setup(/* arguments */) {
+void setup() {
   servRot.attach(PinServRot);
   servLeft.attach(PinServLeft);
   servRight.attach(PinServRight);
@@ -25,7 +25,7 @@ void setPos(int rot,int g,int l, int r){
 }
 
 
-void loop(/* arguments */) {
+void loop() {
   setPos(analogRead(PinControlRot),
   analogRead(PinControlGrip), analogRead(PinControlLeft),analogRead(PinControlRight));
 }
