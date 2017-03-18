@@ -26,6 +26,8 @@ void setPos(int rot,int g,int l, int r){
 
 
 void loop() {
-  setPos(analogRead(PinControlRot),
-  analogRead(PinControlGrip), analogRead(PinControlLeft),analogRead(PinControlRight));
+  setPos( analogRead(PinControlRot), // Pot 1
+          analogRead(PinControlGrip), // Pot 2
+          analogRead(PinControlLeft),  // Joystick X
+          analogRead(PinControlRight)); // Joystick Y
 }
