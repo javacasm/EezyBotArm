@@ -13,7 +13,7 @@ void setup() {
   servRight.attach(PinServRight);
   servGrip.attach(PinServGrip);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
 }
 
@@ -29,18 +29,10 @@ void move(Servo s,int pinServ,int origin,int end){
 
   if(origin==end)
   {
-    Serial.println("quiet");
+//    Serial.println("quiet");
     return;
   }
-  if(step<Min_Step)
-  {
-    Serial.println("almost quiet");
-  }
-  if (step==0)
-  {
-    Serial.println("Error: step=0");
-    return;
-  }
+
 //  s.attach(pinServ);
 //  delay(50);
 Serial.println(String(origin)+" > "+end+" by "+step);
@@ -53,6 +45,25 @@ Serial.println(String(origin)+" > "+end+" by "+step);
   delay(10);
   //s.detach();
 }
+
+void calibrate(Servo s,int pinServo,int pinControl,int minServo,int maxServo) {
+  int oldServoPos=(minServo-maxServo)/2;
+  s.attach(pinServo);
+  while(true)   {
+    int pot = analogRead(pinControl);            // reads the value of the potentiometer (value between 0 and 1023)
+    int newServoPos = map(pot, 0, 1023, minServo, maxServo);     // scale it to use it with the servo (value between 0 and 180)
+    if(newServoPos!=oldServoPos)
+    {
+      s.writeMicroseconds(newServoPos);                  // sets the servo position according to the scaled value
+      delay(15);                           // waits for the servo to get there
+      Serial.println(newServoPos);
+      oldServoPos=newServoPos;
+    }
+  }
+  s.detach();
+}
+
+
 
 int realG=(MaxGrip-MinGrip)/2;
 int realLeft=(MaxLeft-MinLeft)/2;
@@ -76,13 +87,18 @@ void setPos(int rot,int g,int l, int r){
   move(servRot,PinControlRot,realRot,newRot);
   realRot=newRot;
 
-  Serial.println(String("r:")+r+" g:"+g+" l:"+l+" r:"+r);
+  Serial.println(String("rot:")+rot+" grip:"+g+" l:"+l+" r:"+r);
 }
 
 
 void loop() {
+  servRight.detach();
+  servGrip.detach();
+  servRot.detach();
+  calibrate(servLeft,PinServLeft,A5,MinLeft,MaxLeft);
   setPos( analogRead(PinControlRot), // Pot 1
           analogRead(PinControlGrip), // Pot 2
           analogRead(PinControlLeft),  // Joystick X
           analogRead(PinControlRight)); // Joystick Y
+  //delay(1000);
 }
