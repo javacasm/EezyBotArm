@@ -2,6 +2,8 @@
 
 #include "config.h"
 
+// Control of EEZyBotArm MK1 using 2 pots and a joystick
+
 Servo servGrip,servLeft,servRight,servRot;
 
 void setup() {
